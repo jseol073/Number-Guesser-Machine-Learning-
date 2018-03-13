@@ -14,5 +14,5 @@ BinaryImage::BinaryImage(vector<vector<bool>> image) {
 }
 
 vector<vector<bool>> BinaryImage::getBinaryImage() {
-    return this->binary_image;
+    return binary_image;
 }
