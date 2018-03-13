@@ -2,7 +2,6 @@
 // Created by John Seol on 3/10/18.
 //
 
-//#include "main.h"
 #include "BinaryImage.h"
 
 #include <iostream>
@@ -32,8 +31,14 @@ vector<int> getLabel(vector<string> label_vector);
 
 map<int, long> countFrequency(vector<int> label_vector);
 
-double getConditionalProb(vector<BinaryImage> binary_images, vector<int> label_vector,
-                          map<int, long> frequency_map, int row, int column);
+vector<vector<int>> getForegroundCount(vector<BinaryImage> binary_images, vector<int> label_vector);
+
+vector<vector<int>> getBackgroundCount(vector<BinaryImage> binary_images, vector<int> label_vector);
+
+vector<vector<double>> getConditionalProbFor1(vector<vector<int>> count1_each_class, map<int, long> frequency_class);
+
+vector<vector<double>> getConditionalProbFor0(vector<vector<int>> count0_each_class, map<int, long> frequency_class);
+
 /**
  *
  * @return
@@ -79,42 +84,14 @@ int main() {
 
     map<int, long> frequency_class = countFrequency(label_values); //counts frequency of int key
 
-    vector<double> cond_prob_vector;
-    //cond_prob_vector.reserve(CLASS_SIZE);
+    vector<vector<int>> count1_each_class = getForegroundCount(all_binary_images, label_values);
 
-    int row = 1;
-    int column = 1;
+    vector<vector<int>> count0_each_class = getBackgroundCount(all_binary_images, label_values);
 
-    for (int objIndex = 0; objIndex < all_binary_images.size(); objIndex++) {
-        row = 1;
-        column = 1;
+    vector<vector<double>> cond_prob_vector1 = getConditionalProbFor1(count1_each_class, frequency_class);
 
-        for (int lineIndex = row - 1; lineIndex < row; lineIndex++) {
+    vector<vector<double>> cond_prob_vector0 = getConditionalProbFor0(count0_each_class, frequency_class);
 
-            for (int boolIndex = column - 1; boolIndex < column; boolIndex++) {
-
-                cout << (getConditionalProb(all_binary_images, label_values, frequency_class, row, column))
-                     << '\n';
-
-                if (column >= IMAGE_LENGTH) {
-                    row++;
-                    column = 1;
-
-                } else {
-                    column++;
-                }
-            }
-
-            if (row >= (IMAGE_LENGTH - 1)) {
-                break;
-
-            } else {
-                row++;
-            }
-        }
-    }
-
-    //cout << cond_prob_vector[0];
     return 0;
 }
 
@@ -203,19 +180,116 @@ map<int, long> countFrequency(vector<int> label_vector) {
  *
  * @param binary_images
  * @param label_vector
- * @param frequency_map
+ * @return
  */
-double getConditionalProb(vector<BinaryImage> binary_images, vector<int> label_vector,
-                            map<int, long> frequency_map, int row, int column) {
+vector<vector<int>> getForegroundCount(vector<BinaryImage> binary_images, vector<int> label_vector) {
+    vector<vector<int>> count_vector;
+    count_vector.resize(CLASS_SIZE);
     int count = 0;
 
-    for (int class_ = column - 1 ; class_ < CLASS_SIZE; class_++) {
+    for (int class_ = 0; class_ < CLASS_SIZE; class_++) {
 
+        for (int lineIndex = 0; lineIndex < (IMAGE_LENGTH - 1); lineIndex++) {
+
+            for (int boolIndex = 0; boolIndex < IMAGE_LENGTH; boolIndex++) {
+                count = 0;
+
+                for (int objIndex = 0; objIndex < binary_images.size(); objIndex++) {
+
+                    if (label_vector[objIndex] == class_) {
+
+                        if (binary_images[objIndex].getBinaryImage()[lineIndex][boolIndex]) {
+                            count++;
+                        }
+                    }
+                }
+//                cout << "count: " << count << " class: " << class_ << ", lineIndex: " << lineIndex << ", boolIndex: "
+//                     << boolIndex << '\n';
+                count_vector[class_].push_back(count);
+
+            }
+        }
     }
+    return count_vector;
+}
 
-    long class_frequency;
-    //= frequency_map.at(class_num);
-    return (K_VALUE + count) / ((V * K_VALUE) + class_frequency);
+/**
+ *
+ * @param binary_images
+ * @param label_vector
+ * @return
+ */
+vector<vector<int>> getBackgroundCount(vector<BinaryImage> binary_images, vector<int> label_vector) {
+    vector<vector<int>> count_vector;
+    count_vector.resize(CLASS_SIZE);
+    int count = 0;
+
+    for (int class_ = 0; class_ < CLASS_SIZE; class_++) {
+
+        for (int lineIndex = 0; lineIndex < (IMAGE_LENGTH - 1); lineIndex++) {
+
+            for (int boolIndex = 0; boolIndex < IMAGE_LENGTH; boolIndex++) {
+                count = 0;
+
+                for (int objIndex = 0; objIndex < binary_images.size(); objIndex++) {
+
+                    if (label_vector[objIndex] == class_) {
+
+                        if (!binary_images[objIndex].getBinaryImage()[lineIndex][boolIndex]) {
+                            count++;
+                        }
+                    }
+                }
+//                cout << "count: " << count << " class: " << class_ << ", lineIndex: " << lineIndex << ", boolIndex: "
+//                     << boolIndex << '\n';
+                count_vector[class_].push_back(count);
+
+            }
+        }
+    }
+    return count_vector;
+}
+
+/**
+ *
+ * @param count1_each_class
+ * @param frequency_class
+ * @return
+ */
+vector<vector<double>> getConditionalProbFor1(vector<vector<int>> count1_each_class, map<int, long> frequency_class) {
+    vector<vector<double>> conditional_prob_1;
+    conditional_prob_1.resize(CLASS_SIZE);
+
+    for (int curr_class = 0; curr_class < count1_each_class.size(); curr_class++) {
+        for (int curr_coordinate = 0; curr_coordinate < count1_each_class[curr_class].size(); curr_coordinate++) {
+            double cond_prob = (K_VALUE + count1_each_class[curr_class][curr_coordinate])
+                               / ((V * K_VALUE) + frequency_class.at(curr_class));
+            conditional_prob_1[curr_class].push_back(cond_prob);
+            cout << "Probability: " << cond_prob << ", class: " << curr_class << ", coordinate: " << curr_coordinate << '\n';
+
+        }
+    }
+    return conditional_prob_1;
+}
+
+/**
+ *
+ * @param count0_each_class
+ * @param frequency_class
+ * @return
+ */
+vector<vector<double>> getConditionalProbFor0(vector<vector<int>> count0_each_class, map<int, long> frequency_class) {
+    vector<vector<double>> conditional_prob_0;
+    conditional_prob_0.resize(CLASS_SIZE);
+
+    for (int curr_class = 0; curr_class < count0_each_class.size(); curr_class++) {
+        for (int curr_coordinate = 0; curr_coordinate < count0_each_class[curr_class].size(); curr_coordinate++) {
+            double cond_prob = (K_VALUE + count0_each_class[curr_class][curr_coordinate])
+                               / ((V * K_VALUE) + frequency_class.at(curr_class));
+            conditional_prob_0[curr_class].push_back(cond_prob);
+        }
+    }
+    return conditional_prob_0;
 }
 
 
