@@ -31,9 +31,9 @@ public:
 
     vector<vector<double>> getConditionalProbFor0(vector<vector<int>> count0_each_class, map<int, long> frequency_class);
 
-    void makeConditionalProbFile(vector<vector<double>> cond_prob_1);
+    void makeConditionalProbFileFor1(vector<vector<double>> cond_prob_1);
 
-    //friend std::ostream & operator<<(std::ostream& output_stream, const Training &training);
+    void makeConditionalProbFileFor0(vector<vector<double>> cond_prob_0);
 };
 
 

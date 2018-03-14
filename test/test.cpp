@@ -31,7 +31,7 @@ TEST_CASE("2D image") {
 
 }
 
-TEST_CASE("String to binary vector") {
+TEST_CASE("String vector to binary vector") {
     vector<string> input = {"  ### +# ", " #   +"};
     vector<vector<bool>> expected = {{false, false, true, true, true, false, true, true, false},
                                      {false, true, false, false, false, true}};
@@ -46,7 +46,7 @@ TEST_CASE("getLabels test") {
 
 TEST_CASE("Class Frequency") {
     vector<int> label_test = {1, 1, 2, 3, 4, 5};
-    map<int, long> frequency_expected;// = {{1, 2}, {1, 2} {2, 1}, {3, 1}, {4, 1}, {5, 1}};
+    map<int, long> frequency_expected;
     map<int, long> frequency_actual = training.countFrequency(label_test);
     REQUIRE(frequency_expected == frequency_actual);
 }
