@@ -1,0 +1,1 @@
+/Library/Developer/CommandLineTools/usr/bin/c++  -g -Wl,-search_paths_first -Wl,-headerpad_max_install_names  CMakeFiles/naivebayes.dir/src/main.cpp.o CMakeFiles/naivebayes.dir/src/BinaryImage.cpp.o CMakeFiles/naivebayes.dir/src/Training.cpp.o CMakeFiles/naivebayes.dir/src/Classifying.cpp.o  -o naivebayes 

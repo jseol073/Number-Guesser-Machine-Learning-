@@ -19,10 +19,6 @@ using namespace std;
 
 bool file_is_empty(std::ifstream& training_model_file);
 
-/**
- *
- * @return
- */
 int main() {
     ifstream training_model_stream("/Users/johnseol/CLionProjects/naivebayes-jseol073/data/ConditionalProbabilities0");
     Training training;
@@ -151,6 +147,10 @@ int main() {
 
         vector<double> post_probs = classifying.calculatePosteriorProbs
                 (all_binary_test_images, prob0_class_values, prob1_class_values, frequency_classes);
+
+        for (double post_prob : post_probs) {
+            cout << post_prob << endl;
+        }
     }
     training_model_stream.close();
     return 0;

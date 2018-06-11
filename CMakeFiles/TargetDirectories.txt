@@ -1,0 +1,4 @@
+/Users/johnseol/cs_126/CLionProjects/naivebayes-jseol073/CMakeFiles/unit-tests.dir
+/Users/johnseol/cs_126/CLionProjects/naivebayes-jseol073/CMakeFiles/rebuild_cache.dir
+/Users/johnseol/cs_126/CLionProjects/naivebayes-jseol073/CMakeFiles/edit_cache.dir
+/Users/johnseol/cs_126/CLionProjects/naivebayes-jseol073/CMakeFiles/naivebayes.dir

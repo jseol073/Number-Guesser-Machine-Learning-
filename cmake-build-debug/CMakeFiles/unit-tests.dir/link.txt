@@ -1,0 +1,1 @@
+/Library/Developer/CommandLineTools/usr/bin/c++  -g -Wl,-search_paths_first -Wl,-headerpad_max_install_names  CMakeFiles/unit-tests.dir/test/test.cpp.o CMakeFiles/unit-tests.dir/src/Training.cpp.o CMakeFiles/unit-tests.dir/src/BinaryImage.cpp.o  -o unit-tests 

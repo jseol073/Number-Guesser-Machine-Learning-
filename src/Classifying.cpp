@@ -122,11 +122,12 @@ double Classifying::getMaxPosteriorProb
          vector<vector<double>> prob1_values, int objIndex, map<int, long> frequency_class) {
     vector<double> post_probs_by_class;
     int prior_prob_index = 0;
+    vector<double> probForEachClass;
 
     for (int class_ = 0; class_ < CLASS_SIZE; class_++) {
-        double sum_of_probs = 0;
+        //double sum_of_probs = 0;
         double prob_of_class = ((frequency_class.at(class_)) / TRAINING_IMAGES_SIZE);
-        sum_of_probs += log(prob_of_class);
+        probForEachClass.push_back(log(prob_of_class));
 
         for (int line_index = 0; line_index < all_binary_images[objIndex].getBinaryImage().size(); line_index++) {
 
@@ -139,7 +140,7 @@ double Classifying::getMaxPosteriorProb
                         break;
 
                     } else {
-                        sum_of_probs += log(prob1_values[class_][prior_prob_index]);
+                        probForEachClass.push_back(log(prob1_values[class_][prior_prob_index]));
                         prior_prob_index++;
                     }
                 } else {
@@ -147,16 +148,25 @@ double Classifying::getMaxPosteriorProb
                         break;
 
                     } else {
-                        sum_of_probs += log(prob0_values[class_][prior_prob_index]);
+                        probForEachClass.push_back(log(prob0_values[class_][prior_prob_index]));
                         prior_prob_index++;
                     }
                 }
             }
         }
-        post_probs_by_class.push_back(sum_of_probs);
+        double sum = getSumOfVector(probForEachClass);
+        post_probs_by_class.push_back(sum);
     }
 
     //returning highest probability (of all the classes) for this current image
     auto max_prob = max_element(post_probs_by_class.begin(), post_probs_by_class.end());
     return *max_prob;
+}
+
+double Classifying::getSumOfVector(vector<double> probVector) {
+    double sum = 0;
+    for (double prob : probVector) {
+        sum += prob;
+    }
+    return sum;
 }

@@ -16,16 +16,13 @@ class Classifying {
 public:
     Classifying() = default;
     vector<double> getProbValues(vector<string> prob_vector);
-
     vector<vector<double>> getTrainingProb(vector<double> all_lines);
-
     vector<string> getFileLines(ifstream& test_images_file_stream);
-
     vector<double> calculatePosteriorProbs(vector<BinaryImage> all_binary_images, vector<vector<double>> prob0_values,
                                            vector<vector<double>> prob1_values, map<int, long> frequency_class);
-
     double getMaxPosteriorProb(vector<BinaryImage> all_binary_images, vector<vector<double>> prob0_values,
                                              vector<vector<double>> prob1_values, int objIndex, map<int, long> frequency_class);
+    double getSumOfVector(vector<double> probVector);
 };
 
 
